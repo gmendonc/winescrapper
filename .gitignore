@@ -2369,3 +2369,16 @@ mvp/venvw/Scripts/pip3.exe
 mvp/venvw/Scripts/python.exe
 mvp/venvw/Scripts/pythonw.exe
 chromedriver_win32/chromedriver.exe
+mvp/__pycache__/winedashboard.cpython-38.pyc
+mvp/app/__pycache__/__init__.cpython-38.pyc
+mvp/app/__pycache__/email.cpython-38.pyc
+mvp/app/__pycache__/models.cpython-38.pyc
+mvp/app/auth/__pycache__/__init__.cpython-38.pyc
+mvp/app/auth/__pycache__/email.cpython-38.pyc
+mvp/app/auth/__pycache__/forms.cpython-38.pyc
+mvp/app/auth/__pycache__/routes.cpython-38.pyc
+mvp/app/errors/__pycache__/__init__.cpython-38.pyc
+mvp/app/errors/__pycache__/handlers.cpython-38.pyc
+mvp/app/main/__pycache__/__init__.cpython-38.pyc
+mvp/app/main/__pycache__/forms.cpython-38.pyc
+mvp/app/main/__pycache__/routes.cpython-38.pyc
