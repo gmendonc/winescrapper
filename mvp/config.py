@@ -1,5 +1,9 @@
 import os
+from dotenv import load_dotenv
+
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+mongo_db_base_uri = "mongodb+srv://winemaster:winescrape7@projectw-vkqlx.mongodb.net/test?retryWrites=true&w=majority"
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
@@ -13,3 +17,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['admin@example.com']
     POSTS_PER_PAGE = 3
+
+    MONGO_DB_URI = os.environ.get('MONGO_DB_URI') or mongo_db_base_uri
+    MONGO_DATABASE = os.environ.get('MONGO_DATABASE') or 'winedb'
+    MONGO_COLLECTION = os.environ.get('MONGO_COLLECTION') or 'wines'

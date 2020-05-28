@@ -3,8 +3,10 @@ from flask import render_template, flash, redirect, url_for, request, current_ap
 from flask_login import current_user, login_required
 from app import db
 from app.main.forms import EditProfileForm, EmptyForm, PostForm
-from app.models import User, Post
+from app.models import User, Post, Winedb
 from app.main import bp
+import pandas as pd
+import numpy as np
 
 
 @bp.before_app_request
@@ -118,3 +120,14 @@ def unfollow(username):
         return redirect(url_for('main.user', username=username))
     else:
         return redirect(url_for('main.index'))
+
+
+@bp.route('/table')
+def show_table():
+    #df = pd.DataFrame(np.random.randn(100, 4), columns=list('ABCD'))
+    winedb = Winedb()
+    df = winedb.get_dataframe()
+    #table = df.to_html()
+
+    return render_template('tables.html',df=df)
+

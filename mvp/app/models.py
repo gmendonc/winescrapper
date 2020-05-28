@@ -4,6 +4,8 @@ from time import time
 from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from pymongo import MongoClient
+import pandas as pd
 import jwt
 from app import db, login
 
@@ -80,6 +82,20 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+class Winedb():
+    
+    def __init__(self):
+        client = MongoClient(current_app.config['MONGO_DB_URI'])
+        document = client[current_app.config['MONGO_DATABASE']]
+        self.collection = document[current_app.config['MONGO_COLLECTION']]
+
+    def get_dataframe(self):
+        
+        df = pd.DataFrame(list(self.collection.find()))
+        del df['_id']
+        return df
 
 @login.user_loader
 def load_user(id):

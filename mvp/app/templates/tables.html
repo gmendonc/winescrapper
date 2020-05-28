@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <div>
+        <h1>Tabela de Vinhos</h1>
+        {{ df.to_html()|safe }}
+    </div>
+{% endblock %}
