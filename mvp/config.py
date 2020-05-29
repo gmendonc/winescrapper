@@ -21,3 +21,5 @@ class Config(object):
     MONGO_DB_URI = os.environ.get('MONGO_DB_URI') or mongo_db_base_uri
     MONGO_DATABASE = os.environ.get('MONGO_DATABASE') or 'winedb'
     MONGO_COLLECTION = os.environ.get('MONGO_COLLECTION') or 'wines'
+
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')

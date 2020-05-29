@@ -17,38 +17,25 @@ def before_request():
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def index():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live!')
-        return redirect(url_for('main.index'))
-    page = request.args.get('page', 1, type=int)
-    posts = current_user.followed_posts().paginate(
-        page,current_app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('main.index', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('main.index', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template('index.html', title='Home', form=form,
-                           posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
+    #df = pd.DataFrame(np.random.randn(100, 4), columns=list('ABCD'))
+    winedb = Winedb()
+    data = winedb.get_dataframe()
+    result_clean = data.loc[(data.vivino_rating>=100) & (data.lowest_price <= 200.0) & (data.vivino_score >= 3.7)]
+    df = result_clean.sort_values(by=['lowest_price'], ascending = True, na_position = 'last')
+    #table = df.to_html()
+
+    return render_template('index.html',df=df)
 
 @bp.route('/explore')
-@login_required
+# //@login_required
 def explore():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, current_app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('main.explore', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('main.explore', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template("index.html", title='Explore', posts=posts.items,
-                          next_url=next_url, prev_url=prev_url)
+    winedb = Winedb()
+    data = winedb.get_dataframe()
+    result_clean = data.loc[(data.vivino_rating>=100) & (data.lowest_price <= 100.0) & (data.vivino_score >= 3.7)]
+    df = result_clean.sort_values(by=['lowest_price', 'vivino_score'], ascending = True, na_position = 'last')
+    return render_template('index.html',df=df)
 
 
 @bp.route('/user/<username>')
@@ -126,7 +113,9 @@ def unfollow(username):
 def show_table():
     #df = pd.DataFrame(np.random.randn(100, 4), columns=list('ABCD'))
     winedb = Winedb()
-    df = winedb.get_dataframe()
+    data = winedb.get_dataframe()
+    result_clean = data.loc[(data.vivino_rating>=100) & (data.lowest_price <= 100.0) & (data.vivino_score >= 3.7)]
+    df = result_clean.sort_values(by=['lowest_price', 'vivino_score'], ascending = True, na_position = 'last')
     #table = df.to_html()
 
     return render_template('tables.html',df=df)
