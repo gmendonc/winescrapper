@@ -40,6 +40,10 @@ def create_app(config_class=Config):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
+    with app.app_context():
+        from app.plotlydash.dashboard import create_dashboard
+        app = create_dashboard(app)
+
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
             auth = None

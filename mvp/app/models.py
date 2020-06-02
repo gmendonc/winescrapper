@@ -94,6 +94,8 @@ class Winedb():
     def get_dataframe(self):
         
         df = pd.DataFrame(list(self.collection.find()))
+        df['link'] = 'https://' + df['link'].astype(str)
+        df['vivino_link'] = 'https://' + df['vivino_link'].astype(str)
         del df['_id']
         return df
 
