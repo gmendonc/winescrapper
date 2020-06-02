@@ -97,7 +97,13 @@ class Winedb():
         df['link'] = 'https://' + df['link'].astype(str)
         df['vivino_link'] = 'https://' + df['vivino_link'].astype(str)
         del df['_id']
+        self.df = df
         return df
+
+    @staticmethod
+    def get_countrylist(df):
+        countrylist = ["World"] + df["country"].unique().tolist()
+        return countrylist
 
 @login.user_loader
 def load_user(id):
