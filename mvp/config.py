@@ -19,6 +19,7 @@ class Config(object):
     POSTS_PER_PAGE = 3
 
     MONGO_DB_URI = os.environ.get('MONGO_DB_URI') or mongo_db_base_uri
+    MONGO_URI = os.environ.get('MONGO_DB_URI') or mongo_db_base_uri
     MONGO_DATABASE = os.environ.get('MONGO_DATABASE') or 'winedb'
     MONGO_COLLECTION = os.environ.get('MONGO_COLLECTION') or 'wines'
 

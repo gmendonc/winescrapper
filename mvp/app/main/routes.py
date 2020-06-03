@@ -1,9 +1,9 @@
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, current_app
+from flask import render_template, flash, redirect, url_for, request, current_app, g
 from flask_login import current_user, login_required
-from app import db
+from app import db, mongo
 from app.main.forms import EditProfileForm, EmptyForm, PostForm
-from app.models import User, Post, Winedb
+from app.models import User, Post, Wineset
 from app.main import bp
 import pandas as pd
 import numpy as np
@@ -17,24 +17,15 @@ def before_request():
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def index():
-    #df = pd.DataFrame(np.random.randn(100, 4), columns=list('ABCD'))
-    winedb = Winedb()
-    data = winedb.get_dataframe()
-    result_clean = data.loc[(data.vivino_rating>=100) & (data.lowest_price <= 200.0) & (data.vivino_score >= 3.7)]
+    wineset = Wineset(mongo.cx)
+    data = wineset.get_dataframe()
+    pruned_data = data.loc[data.lowest_price <= 200.0]
+    pruned_data = pruned_data[["wine_name", "link", "country", "type", "lowest_price", "vivino_link", "vivino_score", "vivino_rating"]]
+    result_clean = pruned_data.loc[(pruned_data.vivino_rating>=200) & (pruned_data.lowest_price <= 80.0) & (pruned_data.vivino_score >= pruned_data.vivino_score.mean())]
     df = result_clean.sort_values(by=['lowest_price'], ascending = True, na_position = 'last')
-    #table = df.to_html()
-
-    return render_template('index.html',df=df)
-
-@bp.route('/explore')
-# //@login_required
-def explore():
-    winedb = Winedb()
-    data = winedb.get_dataframe()
-    result_clean = data.loc[(data.vivino_rating>=100) & (data.lowest_price <= 100.0) & (data.vivino_score >= 3.7)]
-    df = result_clean.sort_values(by=['lowest_price', 'vivino_score'], ascending = True, na_position = 'last')
+ 
     return render_template('index.html',df=df)
 
 

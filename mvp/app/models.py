@@ -84,10 +84,9 @@ class Post(db.Model):
         return '<Post {}>'.format(self.body)
 
 
-class Winedb():
+class Wineset():
     
-    def __init__(self):
-        client = MongoClient(current_app.config['MONGO_DB_URI'])
+    def __init__(self, client):
         document = client[current_app.config['MONGO_DATABASE']]
         self.collection = document[current_app.config['MONGO_COLLECTION']]
 

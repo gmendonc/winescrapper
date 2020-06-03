@@ -4,8 +4,9 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc 
 import dash_table
 import dash_html_components as html
-from app.models import Winedb
+from app.models import Wineset
 from app.plotlydash.results import Result
+from app import mongo
 
 
 def create_dashboard(server):
@@ -14,13 +15,13 @@ def create_dashboard(server):
                           external_stylesheets=[dbc.themes.LUX]
                         )
 
-    winedb = Winedb()
-    data = winedb.get_dataframe()
+    wineset = Wineset(mongo.cx)
+    data = wineset.get_dataframe()
 
     # Input
     inputs = dbc.FormGroup([
         html.H4("Selecione o País"),
-        dcc.Dropdown(id="country", options=[{"label":x,"value":x} for x in winedb.get_countrylist(data)], value="World")
+        dcc.Dropdown(id="country", options=[{"label":x,"value":x} for x in Wineset.get_countrylist(data)], value="World")
     ]) 
 
     dash_app.layout = dbc.Container(fluid=True, children=[
