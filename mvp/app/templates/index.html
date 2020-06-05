@@ -4,44 +4,35 @@
     {{ super() }}
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='data_table.js') }}"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript">$(document).ready(function(){
-        $('table').DataTable({
-            "columnDefs": [
-                {
-                    "render": function (data, type, row) {
-                        return '<a href=' + row[1] + '>' + data + '</a>';
-                    },
-                    "targets": 0
-                },
-                {
-                    "render": function (data, type, row) {
-                        return '<a href=' + row[5] + '>' + data + '</a>';
-                    },
-                    "targets": 6
-                },
-                { "visible": false,  "targets": [ 1, 5 ] },
-            ],
-            "pageLength": 10
-        });
-    });</script>
+
 {% endblock %}
 
 {% block app_content %}
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
-<div class="melhores-ofertas">
-    <h2>Melhores Ofertas</h2>
-    <p>Estas são as melhores oportunidades encontradas atualmente na 
-    <a href="https://wine.com.br">Wine</a> segundo os seguintes critérios</p>
-    <ul>
-        <li>Preço abaixo de R$ 80,00</li>
-        <li>Nota do <a href="https://www.vivino.com">Vivino</a> acima da média para vinhos até R$ 200,00.</li>
-        <li>Mais de 200 avaliações no <a href="https://www.vivino.com">Vivino</a></li>
-    </ul>
 
-    {{ df.to_html(index=False, render_links=False)|safe }}
+<div class="container container-fluid container-md">
+    <div class="row melhores-ofertas">
+        <h2>Melhores Ofertas</h2>
+        <p>Estas são as melhores oportunidades encontradas atualmente na 
+        <a href="https://wine.com.br">Wine</a> segundo os seguintes critérios</p>
+        <ul>
+            <li>Preço abaixo de R$ 80,00</li>
+            <li>Nota do <a href="https://www.vivino.com">Vivino</a> acima da média para vinhos até R$ 200,00.</li>
+            <li>Mais de 200 avaliações no <a href="https://www.vivino.com">Vivino</a></li>
+        </ul>
+
+        {{ df.to_html(index=False, render_links=False, classes='best_deals_datatable', table_id='best_deals_datatable')|safe }}
+    </div>
+    <div class="row tab-resumo">
+        <div class="col-md-12">
+            {% include '_summary_tabs.html' %}
+        </div>
+    </div>
+
 </div>
 {% endblock %}
  

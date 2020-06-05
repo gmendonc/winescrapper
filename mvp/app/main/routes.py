@@ -25,8 +25,10 @@ def index():
     pruned_data = pruned_data[["wine_name", "link", "country", "type", "lowest_price", "vivino_link", "vivino_score", "vivino_rating"]]
     result_clean = pruned_data.loc[(pruned_data.vivino_rating>=200) & (pruned_data.lowest_price <= 80.0) & (pruned_data.vivino_score >= pruned_data.vivino_score.mean())]
     df = result_clean.sort_values(by=['lowest_price'], ascending = True, na_position = 'last')
- 
-    return render_template('index.html',df=df)
+    resumo_df = data[['lowest_price','vivino_score']].describe()
+    resumo_df.columns = ['Preço', 'Avaliação']
+    resumo_df.style.format({'Avaliação': "{:.2}"})
+    return render_template('index.html',df=df, resumo_df=resumo_df)
 
 
 @bp.route('/user/<username>')

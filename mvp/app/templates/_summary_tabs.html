@@ -1,0 +1,19 @@
+<nav>
+    <div class="nav nav-tabs nav-fill nav-justified" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Resumo</a>
+        <a class="nav-item nav-link" id="nav-graph1-tab" data-toggle="tab" href="#nav-graph1" role="tab" aria-controls="nav-graph1" aria-selected="false">Histograma 1</a>
+        <a class="nav-item nav-link" id="nav-graph2-tab" data-toggle="tab" href="#nav-graph2" role="tab" aria-controls="nav-graph2" aria-selected="false">Historgrama 2</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+       {{ resumo_df.to_html(index=true, render_links=False)|safe }}
+    </div>
+    <div class="tab-pane fade" id="nav-graph1" role="tabpanel" aria-labelledby="nav-graph1-tab">
+        Aqui vai o gráfico 1
+        {{ resumo_df.iloc[0] }}
+    </div>
+    <div class="tab-pane fade" id="nav-graph2" role="tabpanel" aria-labelledby="nav-graph2-tab">
+        Aqui vai o gráfico 2
+    </div>
+</div>

@@ -9,3 +9,5 @@ __pycache__/
 *.pyc
 mvp/app/__pycache__/
 .vscode/settings.json
+result_semana-29-05.csv
+result.csv
