@@ -89,19 +89,27 @@ class Wineset():
     def __init__(self, client):
         document = client[current_app.config['MONGO_DATABASE']]
         self.collection = document[current_app.config['MONGO_COLLECTION']]
+        df = pd.DataFrame(list(self.collection.find()))
+        self.df = df
+
 
     def get_dataframe(self):
-        
-        df = pd.DataFrame(list(self.collection.find()))
+        df = self.df
+        return df
+
+    def get_formatted_dataframe(self):
+        df = self.df
         df['link'] = 'https://' + df['link'].astype(str)
         df['vivino_link'] = 'https://' + df['vivino_link'].astype(str)
         del df['_id']
-        self.df = df
+        df['Nome'] = "[" + df['wine_name'].astype(str) + "](" + df['link'].astype(str) + " \"wine_name\")"
+        df['Score'] = "[" + df['vivino_score'].astype(str) + "](" + df['vivino_link'].astype(str) + " \"wine_name\")"
+        df.style.format({"lowest_price":"${:20,.2f}"})
         return df
 
     @staticmethod
     def get_countrylist(df):
-        countrylist = ["World"] + df["country"].unique().tolist()
+        countrylist = ["World"] + sorted(df["country"].unique().tolist())
         return countrylist
 
 @login.user_loader

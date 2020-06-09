@@ -16,7 +16,7 @@ def create_dashboard(server):
                         )
 
     wineset = Wineset(mongo.cx)
-    data = wineset.get_dataframe()
+    data = wineset.get_formatted_dataframe()
 
     # Input
     inputs = dbc.FormGroup([
@@ -34,16 +34,12 @@ def create_dashboard(server):
                 html.Div(id="output-panel")
             ]),
             dbc.Col(md=10, children=[
-                dbc.Col(html.H4("Wine Price Graph"), width={"size":6,"offset":3}),
+                dbc.Col(html.H4("Catálogo Wine"), width={"size":6,"offset":3}),
                 dbc.Tabs(className="nav", children = [
                     dbc.Tab(
- #                       dash_table.DataTable(
- #                           id='database-table',
- #                           columns=[{"name": i, "id": i} for i in data.columns],
- #                           data = data.to_dict('records')
                         create_first_data_table('database-table', data), 
                     label="Tabela de Dados"),
-                    dbc.Tab(dcc.Graph(figure=plot_country_price(data)), label="Gráfico País x Preço")
+                    dbc.Tab(dcc.Graph(id='wine_score_graph'), label="Gráfico Avaliação x Preço")
                 ]),
             ]),
         ]),
@@ -56,14 +52,19 @@ def create_dashboard(server):
 
 def create_first_data_table(table_id, df):
     """Create Dash datatable from Pandas DataFrame."""
+    filtered_df = df[['Nome', 'country', 'lowest_price', 'Score']]
     table = dash_table.DataTable(
         id = table_id,
         style_data = {
             'whitespace':'normal',
             'height':'auto',
         },
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict('records'),
+        columns=[{
+            "name": i, 
+            "id": i,
+            "presentation": "markdown"} for i in filtered_df.columns],
+        data=filtered_df.to_dict('records'),
+        filter_action="native",
         sort_action="native",
         sort_mode='native',
         page_size=50
@@ -72,22 +73,32 @@ def create_first_data_table(table_id, df):
     return table
 
 def init_callbacks(dash_app, df):
+
+    result = Result(df)
+
     @dash_app.callback(
         Output("database-table","data"),
         [Input('country', 'value')])
     def create_data_table(country):
         print("Criando tabela de dados para o país:", country)
         """Create Dash datatable from Pandas DataFrame."""
-        if (country=='World'):
-            countrydf = df
-        else:
-            countrydf = df.loc[(df.country == country)]
+        filtered_df = df[['Nome', 'country', 'lowest_price', 'Score']]
+        countrydf = filtered_df if country == 'World' else df.loc[(df.country == country)]
         data=countrydf.to_dict('records')
         return data
+    
+    @dash_app.callback(
+        Output("wine_score_graph","figure"),
+        [Input('country', 'value')])
+    def update_graph(country):
+        return result.plot_prices_byscore(country)
+        
 
 
-def plot_country_price(df):
-    result = Result(df)
-
-    return result.plot_prices_bycountry()
+#def plot_prices(df):
+#    result = Result(df)
+#    print("Estou no plot_prices")
+#    print(df['vivino_score'].head())
+#
+#    return result.plot_prices_byscore()
 
