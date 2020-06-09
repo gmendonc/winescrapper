@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $('#best_deals_datatable').DataTable({
+    $('#best_deals_dat').DataTable({
         "columnDefs": [
             {
                 "render": function (data, type, row) {

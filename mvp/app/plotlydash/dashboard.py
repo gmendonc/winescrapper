@@ -28,15 +28,21 @@ def create_dashboard(server):
 
 
         dbc.Row([
-            dbc.Col(md=3, children=[
+            dbc.Col(md=2, children=[
                 inputs,
                 html.Br(),html.Br(),html.Br(),
                 html.Div(id="output-panel")
             ]),
-            dbc.Col(md=9, children=[
+            dbc.Col(md=10, children=[
                 dbc.Col(html.H4("Wine Price Graph"), width={"size":6,"offset":3}),
                 dbc.Tabs(className="nav", children = [
-                    dbc.Tab(dash_table.DataTable(id='database-table'), label="Tabela de Dados"),
+                    dbc.Tab(
+ #                       dash_table.DataTable(
+ #                           id='database-table',
+ #                           columns=[{"name": i, "id": i} for i in data.columns],
+ #                           data = data.to_dict('records')
+                        create_first_data_table('database-table', data), 
+                    label="Tabela de Dados"),
                     dbc.Tab(dcc.Graph(figure=plot_country_price(data)), label="Gráfico País x Preço")
                 ]),
             ]),
@@ -48,49 +54,36 @@ def create_dashboard(server):
     return dash_app.server
 
 
-#def create_data_table(df):
-#    """Create Dash datatable from Pandas DataFrame."""
-#    table = dash_table.DataTable(,
-#        style_data = {
-#            'whitespace':'normal',
-#            'height':'auto',
-#        },
-#        columns=[{"name": i, "id": i} for i in df.columns],
-#        data=df.to_dict('records'),
-#        sort_action="native",
-#        sort_mode='native',
-#        page_size=50
-#    )
-#    #table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)
-#    return table
-
-def init_callbacks(dash_app, df):
-    @dash_app.callback([
-        Output("database-table","style_data"),
-        Output("database-table","columns"),
-        Output("database-table","data"),
-        Output("database-table","sort_action"),
-        Output("database-table","sort_mode"),
-        Output("database-table","page_size")],
-        [Input('country', 'value')])
-    def create_data_table(country):
-        """Create Dash datatable from Pandas DataFrame."""
+def create_first_data_table(table_id, df):
+    """Create Dash datatable from Pandas DataFrame."""
+    table = dash_table.DataTable(
+        id = table_id,
         style_data = {
             'whitespace':'normal',
             'height':'auto',
         },
         columns=[{"name": i, "id": i} for i in df.columns],
+        data=df.to_dict('records'),
+        sort_action="native",
+        sort_mode='native',
+        page_size=50
+    )
+    #table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)
+    return table
+
+def init_callbacks(dash_app, df):
+    @dash_app.callback(
+        Output("database-table","data"),
+        [Input('country', 'value')])
+    def create_data_table(country):
+        print("Criando tabela de dados para o país:", country)
+        """Create Dash datatable from Pandas DataFrame."""
         if (country=='World'):
             countrydf = df
         else:
             countrydf = df.loc[(df.country == country)]
-        data=countrydf.to_dict('records'),
-        sort_action="native",
-        sort_mode='native',
-        page_size=50
-        #table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)
-        return style_data, columns, data, sort_action, sort_mode, page_size
-
+        data=countrydf.to_dict('records')
+        return data
 
 
 def plot_country_price(df):
