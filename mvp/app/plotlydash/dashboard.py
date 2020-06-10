@@ -7,7 +7,20 @@ import dash_html_components as html
 from app.models import Wineset
 from app.plotlydash.results import Result
 from app import mongo
+import math
 
+def get_log(value, flag= False):
+    log_value = math.log10(value)
+    return int(log_value) if flag else log_value
+
+def get_navbar():
+    # Navbar
+    navbar = dbc.NavbarSimple(className="nav nav-pills", children=[
+        dbc.NavItem(
+            dbc.NavLink("Home", href="/index")
+        )
+    ])
+    return navbar
 
 def create_dashboard(server):
     dash_app = dash.Dash(server=server,
@@ -25,8 +38,7 @@ def create_dashboard(server):
     ]) 
 
     dash_app.layout = dbc.Container(fluid=True, children=[
-
-
+        get_navbar(),
         dbc.Row([
             dbc.Col(md=2, children=[
                 inputs,
@@ -39,7 +51,18 @@ def create_dashboard(server):
                     dbc.Tab(
                         create_first_data_table('database-table', data), 
                     label="Tabela de Dados"),
-                    dbc.Tab(dcc.Graph(id='wine_score_graph'), label="Gráfico Avaliação x Preço")
+                    dbc.Tab(children = [
+                        dcc.Graph(id='wine_score_graph'),
+                        dcc.Slider(
+                            id='price_slider',
+                            min=0,
+                            max=get_log(data['lowest_price'].max()),
+                            value=get_log(data['lowest_price'].max()),
+                            marks = {i: '{}'.format(10 ** i) for i in range(get_log(data['lowest_price'].max(),True)+1)},
+                            step= 0.01
+                        ),
+                        html.Div(id='slider_output_container')],
+                        label="Gráfico Avaliação x Preço")
                 ]),
             ]),
         ]),
@@ -89,9 +112,22 @@ def init_callbacks(dash_app, df):
     
     @dash_app.callback(
         Output("wine_score_graph","figure"),
+        [Input('country', 'value'),
+         Input('price_slider', 'value')])
+    def update_graph(country, value):
+        return result.plot_prices_byscore(country, 10 ** value)
+
+    @dash_app.callback(
+        Output("price_slider","max"),
         [Input('country', 'value')])
-    def update_graph(country):
-        return result.plot_prices_byscore(country)
+    def update_slider(country):
+        return get_log(result.recalibrate_slider(country))
+
+    @dash_app.callback(
+        Output("slider_output_container","children"),
+        [Input('price_slider', 'value')])
+    def show_slider_value(value):
+        return 'Preço Máximo: "${:20,.2f}"'.format(10 ** value)
         
 
 
