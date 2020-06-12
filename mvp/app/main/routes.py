@@ -20,7 +20,7 @@ def before_request():
 @login_required
 def index():
     wineset = Wineset(mongo.cx)
-    data = wineset.get_dataframe()
+    data = wineset.get_formatted_dataframe()
     pruned_data = data.loc[data.lowest_price <= 200.0]
     pruned_data = pruned_data[["wine_name", "link", "country", "type", "lowest_price", "vivino_link", "vivino_score", "vivino_rating"]]
     result_clean = pruned_data.loc[(pruned_data.vivino_rating>=200) & (pruned_data.lowest_price <= 80.0) & (pruned_data.vivino_score >= pruned_data.vivino_score.mean())]

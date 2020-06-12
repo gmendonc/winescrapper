@@ -31,6 +31,7 @@ class Result():
             filtered_df,
             x="vivino_score", 
             y="lowest_price",
+            color= 'type',
             size="marker_size",
             hover_name="wine_name",
             hover_data= {
@@ -39,7 +40,7 @@ class Result():
                 'marker_size': False
             }
         )
-        fig.update_traces(marker=dict(color="purple"))
+        #fig.update_traces(marker=dict(color="purple"))
         fig.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=550)
         
         return fig

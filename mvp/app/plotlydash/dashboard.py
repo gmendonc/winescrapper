@@ -25,7 +25,9 @@ def get_navbar():
 def create_dashboard(server):
     dash_app = dash.Dash(server=server,
                           routes_pathname_prefix='/dashapp/',
-                          external_stylesheets=[dbc.themes.LUX]
+                          external_stylesheets=[
+                              dbc.themes.LUX,
+                              '/static/style.css']
                         )
 
     wineset = Wineset(mongo.cx)
