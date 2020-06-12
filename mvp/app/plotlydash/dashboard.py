@@ -77,7 +77,7 @@ def create_dashboard(server):
 
 def create_first_data_table(table_id, df):
     """Create Dash datatable from Pandas DataFrame."""
-    filtered_df = df[['Nome', 'country', 'lowest_price', 'Score']]
+    filtered_df = df[['Nome', 'country', 'grape', 'classification', 'lowest_price', 'Score']]
     table = dash_table.DataTable(
         id = table_id,
         style_data = {
@@ -107,7 +107,7 @@ def init_callbacks(dash_app, df):
     def create_data_table(country):
         print("Criando tabela de dados para o país:", country)
         """Create Dash datatable from Pandas DataFrame."""
-        filtered_df = df[['Nome', 'country', 'lowest_price', 'Score']]
+        filtered_df = df[['Nome', 'country', 'grape', 'classification', 'lowest_price', 'Score']]
         countrydf = filtered_df if country == 'World' else df.loc[(df.country == country)]
         data=countrydf.to_dict('records')
         return data

@@ -9,11 +9,11 @@ $(document).ready(function(){
             },
             {
                 "render": function (data, type, row) {
-                    return '<a href=' + row[5] + '>' + data + '</a>';
+                    return '<a href=' + row[7] + '>' + data + '</a>';
                 },
-                "targets": 6
+                "targets": 8
             },
-            { "visible": false,  "targets": [ 1, 5 ] },
+            { "visible": false,  "targets": [ 1, 7 ] },
         ],
         "pageLength": 10
     });

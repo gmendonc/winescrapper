@@ -17,12 +17,12 @@ def before_request():
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def index():
     wineset = Wineset(mongo.cx)
     data = wineset.get_formatted_dataframe()
     pruned_data = data.loc[data.lowest_price <= 200.0]
-    pruned_data = pruned_data[["wine_name", "link", "country", "type", "lowest_price", "vivino_link", "vivino_score", "vivino_rating"]]
+    pruned_data = pruned_data[["wine_name", "link", "country", "type", "classification", "grape", "lowest_price", "vivino_link", "vivino_score", "vivino_rating"]]
     result_clean = pruned_data.loc[(pruned_data.vivino_rating>=200) & (pruned_data.lowest_price <= 80.0) & (pruned_data.vivino_score >= pruned_data.vivino_score.mean())]
     df = result_clean.sort_values(by=['lowest_price'], ascending = True, na_position = 'last')
     resumo_df = data[['lowest_price','vivino_score']].describe()

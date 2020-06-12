@@ -33,6 +33,7 @@ class Result():
             y="lowest_price",
             color= 'type',
             size="marker_size",
+            symbol='classification',
             hover_name="wine_name",
             hover_data= {
                 'description': True,
